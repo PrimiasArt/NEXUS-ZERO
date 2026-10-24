@@ -1,0 +1,44 @@
+{
+  "description": "Hàng đợi câu hỏi từ NEXUS-ZERO gửi lên Giáo viên Gemini 4 Argon Ultra (Antigravity).",
+  "pending_requests": [
+    {
+      "request_id": "req_6b96a0d5",
+      "timestamp": "2026-10-25 01:19:04",
+      "task_input": "Hãy phân tích thống kê chuỗi số [12, 45, 67, 23, 89, 34, 56, 78, 90, 250]: tính trung bình, trung vị, độ lệch chuẩn và tìm các giá trị ngoại lai (outliers)",
+      "escalation_reason": "Chưa có Kỹ năng Tầng 0 phù hợp và Tầng 1 đang ở chế độ Offline (0-API-Key). Yêu cầu Giáo viên Gemini 4 Argon Ultra dạy Kỹ năng mới.",
+      "known_skills": [],
+      "relevant_graph_nodes": [],
+      "status": "resolved_by_argon_ultra"
+    },
+    {
+      "request_id": "req_db1f054a",
+      "timestamp": "2026-10-25 01:20:47",
+      "task_input": "Hãy phân tích thống kê chuỗi số [12, 45, 67, 23, 89, 34, 56, 78, 90, 250]: tính trung bình, trung vị, độ lệch chuẩn và tìm các giá trị ngoại lai (outliers)",
+      "escalation_reason": "Chưa có Kỹ năng Tầng 0 phù hợp và Tầng 1 đang ở chế độ Offline (0-API-Key). Yêu cầu Giáo viên Gemini 4 Argon Ultra dạy Kỹ năng mới.",
+      "known_skills": [],
+      "relevant_graph_nodes": [
+        "concept:chuỗi",
+        "concept:thống",
+        "concept:tích",
+        "concept:phân",
+        "domain:descriptive_statistics"
+      ],
+      "status": "resolved_by_argon_ultra"
+    },
+    {
+      "request_id": "req_2ee0d9dd",
+      "timestamp": "2026-10-25 01:20:47",
+      "task_input": "Kiểm tra số nguyên tố, phân tích thừa số và tìm ước chung GCD, bội chung LCM của 24 và 36",
+      "escalation_reason": "Chưa có Kỹ năng Tầng 0 phù hợp và Tầng 1 đang ở chế độ Offline (0-API-Key). Yêu cầu Giáo viên Gemini 4 Argon Ultra dạy Kỹ năng mới.",
+      "known_skills": [],
+      "relevant_graph_nodes": [
+        "domain:symbolic_and_numeric_math",
+        "domain:descriptive_statistics",
+        "concept:chuỗi",
+        "concept:thống",
+        "concept:tích"
+      ],
+      "status": "resolved_by_argon_ultra"
+    }
+  ]
+}

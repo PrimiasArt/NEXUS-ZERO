@@ -1,0 +1,83 @@
+{
+  "description": "Bài giảng, Đồ thị tri thức và Kỹ năng Python mới từ Giáo viên Argon Ultra truyền xuống NEXUS-ZERO.",
+  "pending_lessons": [],
+  "history_applied": [
+    {
+      "request_id": "req_6b96a0d5",
+      "teacher": "Gemini 4 Argon Ultra (Antigravity)",
+      "knowledge_nodes": [
+        {
+          "node_id": "domain:descriptive_statistics",
+          "label": "Thống kê mô tả & Phát hiện ngoại lai (Outlier Detection)",
+          "category": "scientific_domain",
+          "summary": "Phân tích tập dữ liệu số qua trung bình (mean), trung vị (median), độ lệch chuẩn (stdev), khoảng tứ phân vị (IQR) và điểm Z-score.",
+          "confidence": 0.99
+        },
+        {
+          "node_id": "domain:symbolic_and_numeric_math",
+          "label": "Tính toán Toán học & Số học An toàn",
+          "category": "scientific_domain",
+          "summary": "Giải biểu thức số học, kiểm tra số nguyên tố, ước chung lớn nhất, giai thừa không dùng eval().",
+          "confidence": 0.98
+        },
+        {
+          "node_id": "domain:information_theory_text",
+          "label": "Lý thuyết Thông tin & Băm Văn bản (Entropy & Hashing)",
+          "category": "scientific_domain",
+          "summary": "Đo độ hỗn loạn Shannon Entropy của chuỗi ký tự, thống kê tần suất từ và tạo mã băm SHA-256.",
+          "confidence": 0.98
+        }
+      ],
+      "knowledge_edges": [
+        {
+          "source_id": "skill:statistical_analyzer",
+          "relation": "implements_domain",
+          "target_id": "domain:descriptive_statistics",
+          "weight": 1.8,
+          "evidence": "Tính toán mean, median, stdev, IQR và phát hiện outliers với 0 token API."
+        },
+        {
+          "source_id": "skill:safe_math_solver",
+          "relation": "implements_domain",
+          "target_id": "domain:symbolic_and_numeric_math",
+          "weight": 1.8,
+          "evidence": "Tính toán biểu thức toán học, số nguyên tố, GCD/LCM an toàn."
+        },
+        {
+          "source_id": "skill:text_entropy_hash",
+          "relation": "implements_domain",
+          "target_id": "domain:information_theory_text",
+          "weight": 1.7,
+          "evidence": "Tính Shannon entropy, SHA-256 và thống kê văn bản."
+        }
+      ],
+      "heuristics": [
+        {
+          "domain": "statistics",
+          "rule_text": "Khi phát hiện giá trị ngoại lai (outliers) trên mẫu nhỏ, kết hợp cả quy tắc Tukey IQR (1.5 * IQR) và Z-score (|z| > 2.0) để tránh bị lệch bởi một cực trị duy nhất.",
+          "confidence": 0.98
+        },
+        {
+          "domain": "token_economy",
+          "rule_text": "Mọi bài toán thống kê, toán học, mã băm hoặc phân tích chuỗi đều phải được giải ở Tầng 0 bằng Verified Skill để tiết kiệm 100% ngân sách Gemini API.",
+          "confidence": 0.99
+        }
+      ],
+      "skills": [
+        {
+          "name": "statistical_analyzer",
+          "code": "import math\nimport re\nimport statistics\n\nSKILL_META = {\n    \"name\": \"statistical_analyzer\",\n    \"description\": \"Phân tích thống kê mô tả chuỗi số: tính trung bình (mean), trung vị (median), phương sai, độ lệch chuẩn (stdev), tứ phân vị (IQR) và tìm giá trị ngoại lai (outliers).\",\n    \"keywords\": [\"thống kê\", \"trung bình\", \"trung vị\", \"độ lệch chuẩn\", \"ngoại lai\", \"outlier\", \"outliers\", \"phương sai\", \"statistics\", \"mean\", \"median\", \"stdev\", \"chuỗi số\", \"dữ liệu\"],\n    \"parameters\": {\n        \"query\": \"Chuỗi văn bản chứa danh sách các con số cần phân tích thống kê\"\n    }\n}\n\ndef _extract_numbers(text: str) -> list[float]:\n    raw = re.findall(r\"[-+]?\\d*\\.\\d+|[-+]?\\d+\", text)\n    return [float(x) for x in raw]\n\ndef run(query: str = \"\", **kwargs) -> dict:\n    nums = kwargs.get(\"numbers\")\n    if not nums:\n        nums = _extract_numbers(str(query))\n    if not nums or len(nums) < 2:\n        return {\"error\": \"Cần ít nhất 2 con số để phân tích thống kê.\"}\n\n    sorted_nums = sorted(nums)\n    n = len(sorted_nums)\n    mean_val = statistics.mean(sorted_nums)\n    median_val = statistics.median(sorted_nums)\n    stdev_val = statistics.stdev(sorted_nums) if n > 1 else 0.0\n    variance_val = statistics.variance(sorted_nums) if n > 1 else 0.0\n\n    mid = n // 2\n    lower_half = sorted_nums[:mid]\n    upper_half = sorted_nums[mid + (1 if n % 2 != 0 else 0):]\n    q1 = statistics.median(lower_half) if lower_half else sorted_nums[0]\n    q3 = statistics.median(upper_half) if upper_half else sorted_nums[-1]\n    iqr = q3 - q1\n    low_fence = q1 - 1.5 * iqr\n    high_fence = q3 + 1.5 * iqr\n\n    iqr_outliers = [x for x in sorted_nums if x < low_fence or x > high_fence]\n    z_outliers = [\n        x for x in sorted_nums\n        if stdev_val > 0 and abs((x - mean_val) / stdev_val) >= 2.0\n    ]\n\n    return {\n        \"count\": n,\n        \"sorted_values\": sorted_nums,\n        \"sum\": round(sum(sorted_nums), 4),\n        \"min\": sorted_nums[0],\n        \"max\": sorted_nums[-1],\n        \"mean\": round(mean_val, 4),\n        \"median\": round(median_val, 4),\n        \"stdev\": round(stdev_val, 4),\n        \"variance\": round(variance_val, 4),\n        \"q1\": round(q1, 4),\n        \"q3\": round(q3, 4),\n        \"iqr\": round(iqr, 4),\n        \"iqr_bounds\": [round(low_fence, 4), round(high_fence, 4)],\n        \"outliers_iqr\": iqr_outliers,\n        \"outliers_zscore_gt2\": z_outliers\n    }\n\ndef self_test() -> bool:\n    res = run(query=\"Phân tích [10, 12, 14, 15, 16, 18, 20, 100]\")\n    return (\n        res.get(\"count\") == 8\n        and 100.0 in res.get(\"outliers_iqr\", [])\n        and round(res.get(\"median\", 0), 1) == 15.5\n    )\n"
+        },
+        {
+          "name": "safe_math_solver",
+          "code": "import math\nimport re\n\nSKILL_META = {\n    \"name\": \"safe_math_solver\",\n    \"description\": \"Giải toán số học an toàn: kiểm tra số nguyên tố, phân tích thừa số, tính giai thừa, ước chung lớn nhất (GCD), bội chung nhỏ nhất (LCM) và dãy Fibonacci.\",\n    \"keywords\": [\"nguyên tố\", \"prime\", \"giai thừa\", \"factorial\", \"fibonacci\", \"ước chung\", \"gcd\", \"lcm\", \"bội chung\", \"thừa số\"],\n    \"parameters\": {\n        \"query\": \"Câu hỏi toán học chứa các số nguyên\"\n    }\n}\n\ndef _is_prime(n: int) -> bool:\n    if n < 2:\n        return False\n    if n in (2, 3):\n        return True\n    if n % 2 == 0 or n % 3 == 0:\n        return False\n    i = 5\n    while i * i <= n:\n        if n % i == 0 or n % (i + 2) == 0:\n            return False\n        i += 6\n    return True\n\ndef _prime_factors(n: int) -> list[int]:\n    factors = []\n    d = 2\n    temp = abs(n)\n    while d * d <= temp:\n        while temp % d == 0:\n            factors.append(d)\n            temp //= d\n        d += 1\n    if temp > 1:\n        factors.append(temp)\n    return factors\n\ndef run(query: str = \"\", **kwargs) -> dict:\n    ints = [int(x) for x in re.findall(r\"\\b\\d+\\b\", str(query))]\n    if not ints:\n        return {\"error\": \"Không tìm thấy số nguyên nào trong câu hỏi.\"}\n\n    primary = ints[0]\n    result = {\n        \"input_numbers\": ints,\n        \"primary_number\": primary,\n        \"is_prime\": _is_prime(primary),\n        \"prime_factors\": _prime_factors(primary) if primary <= 10**9 else [],\n    }\n    if primary <= 50:\n        result[\"factorial\"] = math.factorial(primary)\n        a, b = 0, 1\n        fib = []\n        for _ in range(min(primary, 30)):\n            fib.append(a)\n            a, b = b, a + b\n        result[\"fibonacci_sequence\"] = fib\n\n    if len(ints) >= 2:\n        g = ints[0]\n        l = ints[0]\n        for x in ints[1:]:\n            g = math.gcd(g, x)\n            l = math.lcm(l, x)\n        result[\"gcd_all\"] = g\n        result[\"lcm_all\"] = l\n\n    return result\n\ndef self_test() -> bool:\n    r1 = run(query=\"Kiểm tra số nguyên tố và ước chung của 12 và 18\")\n    return r1.get(\"gcd_all\") == 6 and r1.get(\"lcm_all\") == 36 and r1.get(\"is_prime\") is False\n"
+        },
+        {
+          "name": "text_entropy_hash",
+          "code": "import base64\nimport collections\nimport hashlib\nimport math\n\nSKILL_META = {\n    \"name\": \"text_entropy_hash\",\n    \"description\": \"Phân tích lý thuyết thông tin văn bản: tính Shannon Entropy, tạo mã băm SHA-256, mã hóa Base64 và đếm tần suất ký tự/từ.\",\n    \"keywords\": [\"entropy\", \"sha256\", \"băm\", \"hash\", \"base64\", \"tần suất từ\", \"độ dài chuỗi\", \"shannon\"],\n    \"parameters\": {\n        \"query\": \"Văn bản cần tính entropy hoặc băm SHA-256\"\n    }\n}\n\ndef run(query: str = \"\", **kwargs) -> dict:\n    text = str(query).strip()\n    if not text:\n        return {\"error\": \"Chuỗi đầu vào rỗng.\"}\n\n    length = len(text)\n    counts = collections.Counter(text)\n    entropy = -sum((c / length) * math.log2(c / length) for c in counts.values())\n    sha256_hex = hashlib.sha256(text.encode(\"utf-8\")).hexdigest()\n    b64_str = base64.b64encode(text.encode(\"utf-8\")).decode(\"ascii\")\n    words = text.split()\n\n    return {\n        \"char_length\": length,\n        \"word_count\": len(words),\n        \"shannon_entropy_bits_per_char\": round(entropy, 4),\n        \"sha256\": sha256_hex,\n        \"base64\": b64_str[:120],\n        \"top_5_chars\": counts.most_common(5)\n    }\n\ndef self_test() -> bool:\n    res = run(query=\"NEXUS-ZERO self evolving AI\")\n    return res.get(\"char_length\") == 27 and len(res.get(\"sha256\", \"\")) == 64\n"
+        }
+      ],
+      "applied_at": "2026-10-25 01:21:54"
+    }
+  ]
+}

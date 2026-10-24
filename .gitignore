@@ -1,0 +1,18 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments & caches
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Sandbox temporary files & SQLite shared memory / WAL
+data/sandbox_workspace/*
+data/*.db-wal
+data/*.db-shm
+
+# Environment variables
+.env

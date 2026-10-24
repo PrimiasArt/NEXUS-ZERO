@@ -1,0 +1,8 @@
+[project]
+name = "nexus-zero"
+version = "0.1.0"
+description = "Self-Evolving Tri-Tier Cognitive AI Architecture from Scratch"
+requires-python = ">=3.11"
+dependencies = [
+    "google-genai>=2.30.1",
+]
